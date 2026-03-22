@@ -22,12 +22,20 @@ model task {
   task_id     String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   title       String?
   description String?
-  category    String?
+  category_id String?    @db.Uuid
   status      String?
   start_time  DateTime?  @db.Timetz(6)
   end_time    DateTime?  @db.Timetz(6)
   created_at  DateTime   @default(now()) @db.Timestamptz(6)
   updated_at  DateTime   @updatedAt
   user_id     String?    @db.Uuid
+  category    category?  @relation(fields: [category_id], references: [category_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_category")
   auth_user   auth_user? @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_user")
+}
+
+model category {
+  category_id String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title       String  @unique
+  description String?
+  task        task[]
 }

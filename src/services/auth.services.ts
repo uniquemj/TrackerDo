@@ -1,8 +1,8 @@
 import { inject, injectable } from "tsyringe";
 import type { PrismaService } from "../config/prismaService.config.js";
-import type { UserParams } from "../types/model/user.types.js";
+import type { JWTUserPayload, UserParams } from "../types/model/user.types.js";
 import { UserRepository } from "../repository/user.repository.js";
-import { hashPassword } from "../utils/helper.utils.js";
+import { hashPassword, JWTSign } from "../utils/helper.utils.js";
 
 @injectable()
 export class AuthUserService{
@@ -16,7 +16,12 @@ export class AuthUserService{
             }
             const passwordHash = await hashPassword(userParams.password)
             const user = await this.userRespository.create({...userParams, password: passwordHash})
-            return user
+            const jwtPayload: JWTUserPayload = {
+                user_id: user.user_id,
+                email: user.email
+            }
+            const token = JWTSign(jwtPayload)
+            return token
         }catch(e:unknown){
             throw new Error(e);
         }
