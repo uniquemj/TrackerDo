@@ -2,7 +2,7 @@ import { Router, type Request, type Response } from "express";
 import winston from "winston";
 import {Logger} from "../config/logger.config.js";
 import type { AuthUserService } from "../services/auth.services.js";
-import type { UserData } from "../types/model/user.types.js";
+import type { UserParams } from "../types/model/user.types.js";
 import { handleSuccessResponse } from "../helper/successResponse.helper.js";
 
 export class AuthUserController{
@@ -27,8 +27,8 @@ export class AuthUserController{
     }
 
     createUser = async (req: Request, res: Response) => {
-        const userData = req.body as UserData
-        const result = await this.authUserService.createUser(userData);
+        const userParams = req.body as UserParams
+        const result = await this.authUserService.createUser(userParams);
         handleSuccessResponse(res, true, 'User Created.', result)
     }
 }

@@ -1,23 +1,21 @@
 import { inject, injectable } from "tsyringe";
 import type { PrismaService } from "../config/prismaService.config.js";
-import type { UserData } from "../types/model/user.types.js";
+import type { UserParams } from "../types/model/user.types.js";
+import { UserRepository } from "../repository/user.repository.js";
+import { hashPassword } from "../utils/helper.utils.js";
 
 @injectable()
 export class AuthUserService{
-    constructor(@inject('PrismaService') private readonly prismaService: PrismaService){}
+    constructor(@inject(UserRepository) private readonly userRespository: UserRepository){}
     
-    async createUser(userData: UserData){
+    async createUser(userParams: UserParams){
         try{
-            const user = await this.prismaService.auth_user.create({
-                data: {
-                    fname: userData.fname,
-                    lname: userData.lname,
-                    email: userData.email,
-                    password: userData.password,
-                    is_verified: userData.is_verified ?? false
-                }
-            })
-
+            const userExist = await this.userRespository.findOneByEmail(userParams.email);
+            if(userExist){
+                throw new Error('User with Email Exists')
+            }
+            const passwordHash = await hashPassword(userParams.password)
+            const user = await this.userRespository.create({...userParams, password: passwordHash})
             return user
         }catch(e:unknown){
             throw new Error(e);
