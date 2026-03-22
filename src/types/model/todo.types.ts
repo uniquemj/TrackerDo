@@ -1,5 +1,5 @@
 export enum Category{
-    
+
 }
 
 export enum Status{
@@ -23,4 +23,4 @@ export interface TodoPayload{
 
 export interface TodoParams extends Omit<TodoPayload, 'task_id' | 'created_at' | 'updated_at'>{}
 
-export interface UpdateTodoParams extends Partial<Omit<TodoParams, 'user_id'>>
+export interface UpdateTodoParams extends Partial<Omit<TodoParams, 'user_id'>>{};
