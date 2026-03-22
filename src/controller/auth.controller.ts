@@ -27,8 +27,10 @@ export class AuthUserController{
     }
 
     createUser = async (req: Request, res: Response) => {
+        this.logger.debug('User Creation Initialize.')
         const userParams = req.body as UserParams
         const result = await this.authUserService.createUser(userParams);
-        handleSuccessResponse(res, true, 'User Created.', result)
+        this.logger.debug('User Created.')
+        handleSuccessResponse(res, true, 'User Created.', {token: result})
     }
 }

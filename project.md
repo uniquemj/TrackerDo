@@ -38,6 +38,9 @@ This project is for those people who want to keep track of their things and orga
 - Category
 
 ### Fields for each table
+
+(I think We need to include Category as well)
+
 #### User
 - user_id
 - first_name
