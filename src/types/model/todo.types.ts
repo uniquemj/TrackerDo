@@ -1,7 +1,3 @@
-export enum Category{
-
-}
-
 export enum Status{
     TODO= "todo",
     INPROGRESS="inprogress",
@@ -12,7 +8,7 @@ export interface TodoPayload{
     task_id: string,
     title: string,
     description: string,
-    category: string,
+    category_id: string,
     status: Status,
     start_time: Date,
     end_time: Date,
