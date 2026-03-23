@@ -1,5 +1,5 @@
 import { inject, injectable } from "tsyringe";
-import type { UpdateUserParams, UserParams } from "../types/model/user.types.js";
+import type { UpdateUserParams, UserParams, UserPayload } from "../types/model/user.types.js";
 import type { PrismaService } from "../config/prismaService.config.js";
 
 @injectable()
