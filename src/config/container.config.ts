@@ -5,6 +5,7 @@ import { UserRepository } from '../repository/user.repository.js';
 import { TodoService } from '../services/todo.services.js';
 import { CategoryService } from '../services/category.services.js';
 import { CategoryRepository } from '../repository/category.repository.js';
+import { TodoRepository } from '../repository/todo.repository.js';
 
 //Prisma
 container.register('PrismaService', {useClass: PrismaService});
@@ -15,6 +16,7 @@ container.register(UserRepository, {useClass: UserRepository});
 
 // Todo
 container.register(TodoService, {useClass: TodoService});
+container.register(TodoRepository, {useClass: TodoRepository});
 
 // Category
 container.register(CategoryService, {useClass: CategoryService});
