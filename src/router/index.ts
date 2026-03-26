@@ -6,6 +6,8 @@ import {container} from '../config/container.config.js';
 import { AuthUserService } from '../services/auth.services.js';
 import { CategoryController } from '../controller/category.controller.js';
 import { CategoryService } from '../services/category.services.js';
+import { TodoService } from '../services/todo.services.js';
+import { TodoController } from '../controller/todo.controller.js';
 
 const router:Router = express.Router();
 const logger = Logger.getInstance();
@@ -22,6 +24,11 @@ const authUserController = AuthUserController.initController(logger, authUserSer
 const categoryService = container.resolve(CategoryService);
 const categoryController = CategoryController.initController(logger, categoryService);
 
+// TaskController
+const taskService = container.resolve(TodoService);
+const taskController = TodoController.initController(logger, taskService);
+
 router.use('/auth', authUserController.router);
 router.use('/category', categoryController.router);
+router.use('/tasks', taskController.router);
 export default router;
