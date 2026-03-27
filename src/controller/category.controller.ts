@@ -4,6 +4,8 @@ import type { Logger } from "../config/logger.config.js";
 import type { CategoryService } from "../services/category.services.js";
 import { AuthMiddleware } from "../middlewares/auth.middlewares.js";
 import { handleSuccessResponse } from "../helper/successResponse.helper.js";
+import { AllowedUser } from "../middlewares/allowed-user.middlewares.js";
+import { ROLE } from "../types/model/user.types.js";
 
 export class CategoryController{
     private static instance: CategoryController;
@@ -20,11 +22,11 @@ export class CategoryController{
             CategoryController.instance = new CategoryController(logger, categoryService);
         }
         const instance = CategoryController.instance;
-        instance.router.post('/', AuthMiddleware, instance.createCategory);
-        instance.router.put('/:id', AuthMiddleware, instance.updateCategory);
-        instance.router.get('/', AuthMiddleware, instance.getAllCategory);
-        instance.router.get('/:id', AuthMiddleware, instance.getCategoryById);
-        instance.router.delete('/:id', AuthMiddleware, instance.deleteCategory);
+        instance.router.post('/', AuthMiddleware,AllowedUser([ROLE.ADMIN]),instance.createCategory);
+        instance.router.put('/:id', AuthMiddleware,AllowedUser([ROLE.ADMIN]),instance.updateCategory);
+        instance.router.get('/', AuthMiddleware,AllowedUser([ROLE.ADMIN]),instance.getAllCategory);
+        instance.router.get('/:id', AuthMiddleware,AllowedUser([ROLE.ADMIN]),instance.getCategoryById);
+        instance.router.delete('/:id', AuthMiddleware,AllowedUser([ROLE.ADMIN]),instance.deleteCategory);
         return instance
     }
 

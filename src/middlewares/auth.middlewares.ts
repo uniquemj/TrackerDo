@@ -12,7 +12,7 @@ export const AuthMiddleware = (req: AuthRequest, res: Response, next: NextFuncti
 
         const payload = JWTVerify(cookie);
         
-        req.user = {user_id: payload.user_id, email: payload.email}
+        req.user = {user_id: payload.user_id, email: payload.email, role: payload.role}
         next()
     }catch(e){
         throw new Error(e);
