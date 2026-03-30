@@ -30,6 +30,7 @@ model workTime {
   endTime DateTime @db.Timetz(6)
 
   createdAt DateTime @default(now()) @db.Timestamptz(6)
+  @@unique([wt_id, user_id])
 }
 
 model task {
