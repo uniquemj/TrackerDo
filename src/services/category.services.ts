@@ -1,6 +1,7 @@
 import { inject, injectable } from "tsyringe";
 import { CategoryRepository } from "../repository/category.repository.js";
 import type { CategoryParams, PartialCategoryParams } from "../types/model/category.types.js";
+import createHttpError from "../config/errorHandler.config.js";
 
 @injectable()
 export class CategoryService{
@@ -12,12 +13,12 @@ export class CategoryService{
 
             const titleExist = await this.categoryRepository.findByTitle(title);
             if(titleExist){
-                throw new Error('Title with this Category exist.')
+                throw createHttpError.BadRequest('Title with this Category exist.')
             }
             const category = await this.categoryRepository.create(categoryPayload);
             return category;
         }catch(e: unknown){
-            throw new Error(e)
+            throw createHttpError.InternalServerError('Internal Server Error: ', e);
         }
     }
 
@@ -27,7 +28,7 @@ export class CategoryService{
             const updateCategory = await this.categoryRepository.update(category_id, udpateParams);
             return updateCategory;
         }catch(e:unknown){
-            throw new Error(e)
+            throw createHttpError.InternalServerError('Internal Server Error: ', e);
         }
     }
 
@@ -36,7 +37,7 @@ export class CategoryService{
             const allCategory = await this.categoryRepository.findAll();
             return allCategory;
         }catch(e:unknown){
-            throw new Error(e)
+            throw createHttpError.InternalServerError('Internal Server Error: ', e);
         }
     }
 
@@ -44,11 +45,11 @@ export class CategoryService{
         try{
             const categoryExist = await this.categoryRepository.findById(category_id);
             if(!categoryExist){
-                throw new Error("Category with ID doesn't exist.")
+                throw createHttpError.NotFound("Category with ID doesn't exist.")
             }
             return categoryExist
         }catch(e: unknown){
-            throw new Error(e)
+            throw createHttpError.InternalServerError('Internal Server Error: ', e);
         }
     }
 
@@ -58,7 +59,7 @@ export class CategoryService{
             const category = this.categoryRepository.remove(category_id);
             return category
         }catch(e: unknown){
-            throw new Error(e)
+            throw createHttpError.InternalServerError('Internal Server Error: ', e);
         }
     }
 }

@@ -2,6 +2,7 @@ import { inject, injectable } from "tsyringe";
 import { TodoRepository } from "../repository/todo.repository.js";
 import { Status, type TodoParams, type UpdateTodoParams } from "../types/model/todo.types.js";
 import type { PaginationData, searchParams } from "../types/utils/search.types.js";
+import createHttpError from "../config/errorHandler.config.js";
 
 @injectable()
 export class TodoService {
@@ -14,7 +15,7 @@ export class TodoService {
         const tasks = await this.todoRepository.findAll(queryParam, paginationData);
         return tasks;
     }catch(e){
-        throw new Error(e);
+        throw createHttpError.InternalServerError('Internal Server Error: ', e);
     }
   }
 
@@ -22,16 +23,16 @@ export class TodoService {
     try{
         const taskExist = await this.todoRepository.findById(task_id);
         if(!taskExist){
-            throw new Error('Task with Id not exist.')
+            throw createHttpError.NotFound('Task with Id not exist.')
         }
 
         if(user_id !== taskExist.user_id){
-            throw new Error("Task with Id doesn't exist.")
+            throw createHttpError.BadRequest("Task with Id doesn't exist.")
         }
 
         return taskExist;
     } catch (e: unknown){
-        throw new Error(e)
+        throw createHttpError.InternalServerError('Internal Server Error: ', e);
     }
   }
 
@@ -63,7 +64,7 @@ export class TodoService {
       const task = await this.todoRepository.createTask(finalPayload);
       return task;
     } catch (e: unknown) {
-      throw new Error(e);
+      throw createHttpError.InternalServerError('Internal Server Error: ', e);
     }
   };
 
@@ -73,7 +74,7 @@ export class TodoService {
         const updateTask = this.todoRepository.updateTask(task_id, updateParams);
         return updateTask
     }catch(e:unknown){
-        throw new Error(e);
+      throw createHttpError.InternalServerError('Internal Server Error: ', e);
     }
   }
 
@@ -83,7 +84,7 @@ export class TodoService {
         const result = this.todoRepository.deleteTask(task_id);
         return result;
     }catch(e: unknown){
-        throw new Error(e);
+        throw createHttpError.InternalServerError('Internal Server Error: ', e);
     }
   }
 }

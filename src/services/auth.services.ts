@@ -3,6 +3,7 @@ import type { PrismaService } from "../config/prismaService.config.js";
 import { ROLE, type JWTUserPayload, type LoginUserParams, type UserParams, type UserProfileData} from "../types/model/user.types.js";
 import { UserRepository } from "../repository/user.repository.js";
 import { comparePassword, hashPassword, JWTSign } from "../utils/helper.utils.js";
+import createHttpError from "../config/errorHandler.config.js";
 
 @injectable()
 export class AuthUserService{
@@ -12,7 +13,7 @@ export class AuthUserService{
         try{
             const userExist = await this.userRespository.findOneByEmail(userParams.email);
             if(userExist){
-                throw new Error('User with Email Exists')
+                throw createHttpError.BadRequest('User with Email Exists')
             }
             const passwordHash = await hashPassword(userParams.password)
             const user = await this.userRespository.create({...userParams, role: userParams.role ?? ROLE.USER, password: passwordHash})
@@ -24,7 +25,7 @@ export class AuthUserService{
             const token = JWTSign(jwtPayload)
             return token
         }catch(e:unknown){
-            throw new Error(e);
+            throw createHttpError.InternalServerError('Internal Server Error: ', e);
         }
     }
 
@@ -32,11 +33,11 @@ export class AuthUserService{
         try{
             const userExist = await this.userRespository.findOneByEmail(loginParams.email);
             if(!userExist){
-                throw new Error("User with Email doesn't exist.")
+                throw createHttpError.NotFound("User with Email doesn't exist.")
             }
             const matchPassword = comparePassword(loginParams.password, userExist.password as string);
             if(!matchPassword){
-                throw new Error("Password Incorrect")
+                throw createHttpError.BadRequest("Password Incorrect")
             }
             const JWTPaylod: JWTUserPayload = {
                 user_id: userExist.user_id,
@@ -48,7 +49,7 @@ export class AuthUserService{
             return token
 
         }catch(e: unknown){
-            throw new Error(e);
+            throw createHttpError.InternalServerError('Internal Server Error: ', e);
         }
     }
 
@@ -56,7 +57,7 @@ export class AuthUserService{
         try{
             const userProfile = await this.userRespository.findById(userParams.user_id)
             if(!userProfile){
-                throw new Error("User doesn't exist.")
+                throw createHttpError.NotFound("User doesn't exist.")
             }
             return {
                 email: userProfile.email,
@@ -67,7 +68,7 @@ export class AuthUserService{
                 role: userProfile.role as string
             }
         }catch(e: unknown){
-            throw new Error(e);
+            throw createHttpError.InternalServerError('Internal Server Error: ', e);
         }
     }
 }

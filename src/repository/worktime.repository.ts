@@ -1,10 +1,10 @@
-import { injectable } from "tsyringe";
-import type { PrismaService } from "../config/prismaService.config.js";
+import { inject, injectable } from "tsyringe";
+import { PrismaService } from "../config/prismaService.config.js";
 import type { UpdateWorkTimeParams, WorkTimeParams } from "../types/model/worktime.types.js";
 
 @injectable()
 export class WorkTimeRepository{
-    constructor(private readonly prismaService: PrismaService){}
+    constructor(@inject(PrismaService) private readonly prismaService: PrismaService){}
 
     getByUserId = async(user_id: string) =>{
         const result = await this.prismaService.workTime.findFirst({where: {user_id: user_id}});
@@ -16,7 +16,7 @@ export class WorkTimeRepository{
         return result;
     }
 
-    create = async(user_id: string, dataLoad: WorkTimeParams) =>{
+    createWorkTime = async(user_id: string, dataLoad: WorkTimeParams) =>{
         const result = await this.prismaService.workTime.create({
             data: {
                 ...dataLoad,
@@ -26,7 +26,7 @@ export class WorkTimeRepository{
         return result;
     }
 
-    update = async(wt_id: string, user_id: string, dataLoad: UpdateWorkTimeParams) =>{
+    updateWorkTime = async(wt_id: string, user_id: string, dataLoad: UpdateWorkTimeParams) =>{
         const result = await this.prismaService.workTime.update({
             where: {wt_id_user_id: {
                 wt_id: wt_id,
@@ -39,7 +39,7 @@ export class WorkTimeRepository{
         return result;
     }
 
-    delete = async(wt_id: string, user_id: string) =>{
+    deleteWorkTime = async(wt_id: string, user_id: string) =>{
         const result = await this.prismaService.workTime.delete({
             where: {
                 wt_id_user_id: {
