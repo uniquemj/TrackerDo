@@ -4,6 +4,7 @@ import 'dotenv/config';
 import {Logger} from './config/logger.config.js';
 import apiRoute from './router/index.js';
 import cookieParser from 'cookie-parser';
+import { errorHandler } from './middlewares/error-handler.middlewares.js';
 
 // Express APP Definition
 const app = express();
@@ -17,6 +18,8 @@ app.use(cookieParser());
 // API Route
 app.use(`/api/${VERSION}/`, apiRoute)
 
+// Error Handler
+app.use(errorHandler);
 
 // Server Load
 const PORT = process.env.PORT ?? 3000;

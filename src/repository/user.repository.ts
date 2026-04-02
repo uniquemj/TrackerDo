@@ -27,6 +27,7 @@ export class UserRepository {
                     lname: userParams.lname,
                     email: userParams.email,
                     password: userParams.password,
+                    role: userParams.role,
                     is_verified: userParams.is_verified ?? false
                 }
             })
