@@ -7,6 +7,8 @@ import type { AuthRequest } from "../types/utils/user.types.js";
 import { handleSuccessResponse } from "../helper/successResponse.helper.js";
 import type { PaginationData, searchParams } from "../types/utils/search.types.js";
 import { AuthMiddleware } from "../middlewares/auth.middlewares.js";
+import { validate } from "../middlewares/validate.middlewares.js";
+import { TodoSchema, UpdateTodoSchema } from "../types/model/todo.types.js";
 
 export class TodoController{
     readonly router: Router;
@@ -26,8 +28,8 @@ export class TodoController{
         
         instance.router.get('/', AuthMiddleware, instance.getAllTask);
         instance.router.get('/:id', AuthMiddleware, instance.getTaskById);
-        instance.router.post('/', AuthMiddleware, instance.createTask);
-        instance.router.put('/:id', AuthMiddleware, instance.updateTask);
+        instance.router.post('/', AuthMiddleware,validate(TodoSchema) ,instance.createTask);
+        instance.router.put('/:id', AuthMiddleware, validate(UpdateTodoSchema), instance.updateTask);
         instance.router.delete('/:id', AuthMiddleware, instance.deleteTask);
         return instance;
     }

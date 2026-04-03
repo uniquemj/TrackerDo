@@ -5,6 +5,8 @@ import type { WorkTimeService } from "../services/worktime.services.js";
 import type { AuthRequest } from "../types/utils/user.types.js";
 import { handleSuccessResponse } from "../helper/successResponse.helper.js";
 import { AuthMiddleware } from "../middlewares/auth.middlewares.js";
+import { validate } from "../middlewares/validate.middlewares.js";
+import { UpdateWorkTimeSchema, WorkTimeSchema } from "../types/model/worktime.types.js";
 
 export class WorkTimeController{
     private static instance: WorkTimeController;
@@ -23,8 +25,8 @@ export class WorkTimeController{
         const instance = WorkTimeController.instance;
 
         instance.router.get('', AuthMiddleware, instance.getWorkTimeByUser);
-        instance.router.post('', AuthMiddleware, instance.createWorkTime);
-        instance.router.put('/:id', AuthMiddleware, instance.updateWorkTime);
+        instance.router.post('', AuthMiddleware, validate(WorkTimeSchema), instance.createWorkTime);
+        instance.router.put('/:id', AuthMiddleware, validate(UpdateWorkTimeSchema), instance.updateWorkTime);
         instance.router.delete('/:id', AuthMiddleware, instance.deleteWorkTime);
         
         return instance;
