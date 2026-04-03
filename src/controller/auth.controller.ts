@@ -2,12 +2,13 @@ import { Router, type Request, type Response } from "express";
 import winston from "winston";
 import {Logger} from "../config/logger.config.js";
 import type { AuthUserService } from "../services/auth.services.js";
-import type { JWTUserPayload, LoginUserParams, UserParams } from "../types/model/user.types.js";
+import { LoginUserSchema, UserSchema, type JWTUserPayload, type LoginUserParams, type UserParams } from "../types/model/user.types.js";
 import { handleSuccessResponse } from "../helper/successResponse.helper.js";
 import { removeCookie, setCookie } from "../utils/helper.utils.js";
 import { COOKIE } from "../constant/cookie.constant.js";
 import { AuthMiddleware } from "../middlewares/auth.middlewares.js";
 import type { AuthRequest } from "../types/utils/user.types.js";
+import { validate } from "../middlewares/validate.middlewares.js";
 
 export class AuthUserController{
     private static instance: AuthUserController;
@@ -25,8 +26,8 @@ export class AuthUserController{
         }
         const instance = AuthUserController.instance;
 
-        instance.router.post('/signup', instance.createUser);
-        instance.router.post('/login', instance.loginUser);
+        instance.router.post('/signup',validate(UserSchema), instance.createUser);
+        instance.router.post('/login', validate(LoginUserSchema), instance.loginUser);
         instance.router.post('/logout', AuthMiddleware, instance.logOutUser);
         instance.router.get('/user/me', AuthMiddleware, instance.getMe);
 
