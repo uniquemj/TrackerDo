@@ -7,8 +7,9 @@ export const validate = (schema: ZodType) => {
         try{
             const validation = schema.safeParse(req.body);
             if(!validation.success){
-                const formattedError = validation.error.issues.map((issue)=>`${issue.path} : ${issue.message}`)
-                throw createHttpError.BadRequest('Validation Error.', formattedError)
+                console.log(validation.error)
+                const formattedError = validation.error.issues.map((issue)=>`[${issue.path}] : ${issue.message}`)
+                throw createHttpError.BadRequest(`Validation Error: ${formattedError}`)
             }
             req.body = validation.data;
             next();
