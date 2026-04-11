@@ -10,6 +10,7 @@ import { TodoService } from '../services/todo.services.js';
 import { TodoController } from '../controller/todo.controller.js';
 import { WorkTimeService } from '../services/worktime.services.js';
 import { WorkTimeController } from '../controller/worktime.controller.js';
+import { CatchAllController } from '../controller/catch-all.controller.js';
 
 const router:Router = express.Router();
 const logger = Logger.getInstance();
@@ -34,8 +35,12 @@ const taskController = TodoController.initController(logger, taskService);
 const workTimeService = container.resolve(WorkTimeService);
 const workTimeController = WorkTimeController.initController(logger, workTimeService);
 
+//Catch All
+const catchallController = CatchAllController.initController(logger);
+
 router.use('/auth', authUserController.router);
 router.use('/category', categoryController.router);
 router.use('/tasks', taskController.router);
 router.use('/work-time', workTimeController.router);
+router.use('/', catchallController.router);
 export default router;
